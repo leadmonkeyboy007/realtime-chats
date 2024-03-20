@@ -1,0 +1,5 @@
+# check the current react version
+```npm view react version```
+
+# nodemon install
+npm i nodemon --save-dev
