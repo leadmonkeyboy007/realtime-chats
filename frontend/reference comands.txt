@@ -1,0 +1,13 @@
+# check the current react version
+```npm view react version```
+
+# nodemon install
+npm i nodemon --save-dev
+
+# remove node modules
+git rm -r --cached node_modules
+git commit -am "node_modules be gone!"
+git push origin master
+
+#Create .gitignore file and add node_modules there:
+touch .gitignore && echo "node_modules" >> .gitignore
