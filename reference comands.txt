@@ -11,3 +11,6 @@ git push origin master
 
 #Create .gitignore file and add node_modules there:
 touch .gitignore && echo "node_modules" >> .gitignore
+
+#Install MUI
+npm install @material-ui/core

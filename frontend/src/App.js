@@ -1,5 +1,7 @@
 import React from "react";
-import {Link, Route, Routes} from "react-router-dom";
+import { Route, Routes, Redirect } from "react-router-dom";
+
+import Topbar from "./components/topbar/Topbar";
 
 import Messenger from "./pages/Messenger/Messenger";
 import Home from "./pages/Home/Home";
@@ -7,16 +9,7 @@ import Home from "./pages/Home/Home";
 function App() {
   return (
     <div className="container">
-      <nav>
-        <ul>
-          <Link to="/" class="list">
-            Home
-          </Link>
-          <Link to="/messenger" class="list">
-            Messenger
-          </Link>
-        </ul>
-      </nav>
+      <Topbar />
 
       {/* Defining routes path and rendering components as element */}
       <Routes>
