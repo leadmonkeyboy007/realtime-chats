@@ -8,7 +8,7 @@ export default function Messenger() {
     <div className='messenger'>
         <div className="chatMenu">
           <div className="chatMenuWrapper">
-            <input type="text" placeholder='Search forr friends' className='chatMenuInput'/>
+            <input type="text" placeholder='Search for friends' className='chatMenuInput'/>
             <Conversations />
             <Conversations />
             <Conversations />
