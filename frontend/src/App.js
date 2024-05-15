@@ -1,10 +1,18 @@
 import React from "react";
-import { Route, Routes, Redirect } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+} from "react-router-dom";
 
 import Topbar from "./components/topbar/Topbar";
 
-import Messenger from "./pages/Messenger/Messenger";
-import Home from "./pages/Home/Home";
+import Home from "./pages/home/Home";
+import Register from "./pages/register/Register";
+import Login from "./pages/login/Login";
+import Profile from "./pages/profile/Profile";
+import Messenger from "./pages/messenger/Messenger";
+
 
 function App() {
   return (
@@ -12,10 +20,25 @@ function App() {
       <Topbar />
 
       {/* Defining routes path and rendering components as element */}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/messenger" element={<Messenger />} />
-      </Routes>
+      <Router>
+        <Routes>
+          <Route path="/">
+            <Home />
+          </Route>
+          <Route path="/login">
+            <Login />
+          </Route>
+          <Route path="/register">
+            <Register />
+          </Route>
+          <Route path="/profile/:username">
+            <Profile />
+          </Route>
+          <Route path="/messenger">
+            <Messenger />
+          </Route>
+        </Routes>
+      </Router>
     </div>
   );
 }
