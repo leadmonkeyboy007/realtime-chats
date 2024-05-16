@@ -1,5 +1,5 @@
-import "./topbar.css";
-import { Search, Person, Chat, Notifications } from "@material-ui/icons";
+import "./Topbar.css";
+import { Search, Person, Chat, Notifications } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
@@ -10,7 +10,7 @@ export default function Topbar() {
   return (
     <div className="topbarContainer">
       <div className="topbarLeft">
-        <Link to="/" style={{ textDecoration: "none" }}>
+        <Link to="/" sx={{ textDecoration: "none" }}>
           <span className="logo">Lamasocial</span>
         </Link>
       </div>
