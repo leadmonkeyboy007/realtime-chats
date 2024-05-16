@@ -9,8 +9,6 @@ export default function Login() {
   const password = useRef();
   const { isFetching, dispatch } = useContext(AuthContext);
 
- console.log(dispatch)
-
   const handleClick = (e) => {
     e.preventDefault();
     loginCall(
@@ -41,7 +39,7 @@ export default function Login() {
               placeholder="Password"
               type="password"
               required
-              minLength="6"
+              minLength="2"
               className="loginInput"
               ref={password}
             />

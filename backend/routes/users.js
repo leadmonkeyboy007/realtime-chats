@@ -47,20 +47,25 @@ router.delete("/:id", async (req, res) => {
 
 //get a user
 router.get("/", async (req, res) => {
-  const userId = req.query.userId;
-  let username = req.query.username;
-  
+    
   try {
-    const user = userId
-      ? await User.findById(userId)
-      : await User.findOne({ username: username }).exec();
-      console.log(user);
-    const { password, updatedAt, ...other } = user._doc;
-    res.status(200).json(other);
+    let searchQuery = {}
+
+    if(req.query.id){
+        searchQuery._id = req.query.userId;
+    }
+
+    if(req.query.username){
+        searchQuery.username = req.query.username;
+    }
+
+    const user = await User.find(searchQuery);
+    res.status(200).json(user);
   } catch (err) {
     res.status(500).json(err);
   }
 });
+
 
 //get friends
 router.get("/friends/:userId", async (req, res) => {

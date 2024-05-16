@@ -1,5 +1,4 @@
 import "./rightbar.css";
-import { Users } from "../../dummyData";
 import Online from "../online/Online";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
@@ -9,13 +8,28 @@ import { Add, Remove } from "@mui/icons-material";
 
 export default function Rightbar({ user }) {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+  const BL = process.env.REACT_APP_API_URL;
   const [friends, setFriends] = useState([]);
   const { user: currentUser, dispatch } = useContext(AuthContext);
   const [followed, setFollowed] = useState(
     currentUser.followings.includes(user?.id)
   );
-  console.log(user)
-  const BL = process.env.REACT_APP_API_URL;
+  
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    const getUsers = async () => {
+      try {
+        const useList = await axios.get(`${BL}/users`);
+        setUsers(useList.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getUsers();
+  }, []);
+
+  console.log(users)
+ 
   useEffect(() => {
     const getFriends = async () => {
       try {
@@ -58,7 +72,7 @@ export default function Rightbar({ user }) {
         <img className="rightbarAd" src="assets/ad.png" alt="" />
         <h4 className="rightbarTitle">Online Friends</h4>
         <ul className="rightbarFriendList">
-          {Users.map((u) => (
+          {users.map((u) => (
             <Online key={u.id} user={u} />
           ))}
         </ul>
