@@ -50,9 +50,9 @@ router.get("/", async (req, res) => {
     
   try {
     let searchQuery = {}
-
-    if(req.query.id){
-        searchQuery._id = req.query.userId;
+    
+    if(req.query.userId){
+        searchQuery = {_id: req.query.userId};
     }
 
     if(req.query.username){
