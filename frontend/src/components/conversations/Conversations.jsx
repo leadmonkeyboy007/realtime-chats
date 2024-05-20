@@ -28,8 +28,8 @@ export const Conversations = React.forwardRef((props, ref) => {
   }, [conversation, currentUser._id]);
 
   return (
-    <div ref={ref} className='conversation'>
-      <img src={PF + user?.profilePicture} alt="" className="conversationImg" />
+    <div className='conversation'>
+      <img ref={ref} src={PF + user?.profilePicture} alt="" className="conversationImg" />
       <span className='conversationName'>{user?.username}</span>
     </div>
   )

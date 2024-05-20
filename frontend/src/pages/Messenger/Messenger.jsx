@@ -15,7 +15,7 @@ export default function Messenger() {
   const [conversations, setConverations] = useState([]);
   const [messages, setMessages] = useState([]);
   const messageInput = useRef();
-  const imgRef = useRef(null);
+  const imgRef = useRef([]);
   const [currentChat, setCurrentChat] = useState(null);
   const [img, setImg] = useState(null);
 
@@ -73,7 +73,7 @@ export default function Messenger() {
             <input type="text" placeholder='Search for friends' className='chatMenuInput' />
             {
               conversations.map((c, index) => (
-                <div key={index} onClick={(e) => { e.preventDefault(); setCurrentChat(c); setMessages([]); getImage(); }}>
+                <div key={index} onClick={(e) => { e.preventDefault(); setCurrentChat(c); setMessages([]); getImage(index); }}>
                   <Conversations key={c._id} conversation={c} currentUser={user} ref={imgRef} />
                 </div>
               ))
