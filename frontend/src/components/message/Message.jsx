@@ -1,20 +1,46 @@
+import { useEffect, useState } from 'react';
 import './Message.css'
+import moment from 'moment';
+import axios from 'axios';
 
-export default function Message({own}) {
+export default function Message({message, currentUser}) {
+  const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+  const BL = process.env.REACT_APP_API_URL;
+  const own = (currentUser._id === message.sender)? true: false;
+  const [partner, setPartner] = useState({});
+  const isCalled = false;
+  
+    
+  // useEffect(()=> {
+  //   getSenderInfo();
+  // }, [])
+  
+  // const getSenderInfo = async ()=>{
+  //   try {
+  //     const response = await axios.get(`${BL}/users?userId=` + message.sender).then((res) => {
+  //       setPartner(res.data[0]);
+  //       isCalled = true;
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
+  
+
   return (
     <div className={own ? "message own" : "message"}>
         <div className="messageTop">
             <img 
               className='messageImg'
-              src="https://cdn.pixabay.com/photo/2016/03/23/04/01/woman-1274056_960_720.jpg" 
+              // src={own ? PF+currentUser.profilePicture: PF+sender.profilePicture} 
               alt="" 
             />
             <p className='messageText'>
-                The Northrop Grumman B-21 Raider is an American strategic bomber under development for the United States Air Force by Northrop Grumman.
+                {message.text}
             </p>
         </div>
         <div className="messageBottom">
-            1 hour ago
+            {moment(message.createdAt).fromNow()}
         </div>
     </div>
   )

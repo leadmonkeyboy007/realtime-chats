@@ -3,6 +3,7 @@
     align-items: center;
     padding: 10px;
     margin-top: 20px;
+    cursor: pointer;
 }
 .conversation:hover {
     background-color: rgb(212, 204, 204);
