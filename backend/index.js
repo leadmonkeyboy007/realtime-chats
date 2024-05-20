@@ -14,6 +14,28 @@ const router = express.Router();
 const path = require("path");
 const db = require("./config/db");
 
+const socketio = require('socket.io')
+const http = require('http');
+const server = http.createServer(app);
+
+const io = socketio(server, {
+    cors: {
+        origin: ["localhost:3000/"]
+    }
+});
+
+io.on('connection', function(socket) {
+  console.log('connected socket!');
+
+  socket.on('greet', function(data) {
+    console.log(data.message);
+    socket.emit('respond', { hello: 'Hey, Mr.Client!' });
+  });
+  socket.on('disconnect', function() {
+    console.log('Socket disconnected');
+  });
+});
+
 dotenv.config();
 
 db();
@@ -50,7 +72,10 @@ app.use("/backend/posts", postRoute);
 app.use("/backend/conversations", conversationRoute);
 app.use("/backend/messages", messageRoute);
 
-app.listen(process.env.PORT, () => {
+
+
+server.listen(process.env.PORT, () => {
   console.log("Backend server is running!");
   console.log(`Backend PORT is ${process.env.PORT}`);
 });
+
