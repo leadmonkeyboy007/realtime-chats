@@ -14,7 +14,10 @@ export default function Messenger() {
   const BL = process.env.REACT_APP_API_URL;
   const [conversations, setConverations] = useState([]);
   const [messages, setMessages] = useState([]);
+  // get messages by Web socket
   const [arrivalmessage, setarrivalmessage] = useState(null);
+  // get Online Users
+  const [onlineUsers, setOnlineUsers] = useState([]);
   const socket = useRef();
   const messageInput = useRef();
   // this ref is for ref forward sample
@@ -44,15 +47,15 @@ export default function Messenger() {
   }, [arrivalmessage, currentChat]);
   // socket.io
   useEffect(() => {
-    socket.current.on('connect', () => {
+    // socket.current.on('connect', () => {
       console.log('connected!');
       socket.current.emit('AddUser', user._id);
       socket.current.on('getUsers', (users) => {
-        console.log(users);
-      })
+        setOnlineUsers(users);
+      // })
     });
   }, [user]);
-
+  
   useEffect(() => {
     const getConversations = async () => {
       try {
@@ -159,7 +162,7 @@ export default function Messenger() {
         </div>
         <div className="chatOnline">
           <div className="chatOnlineWrapper">
-            <ChatOnline />
+            <ChatOnline onlineUsers={onlineUsers} currentId={user._id} setCurrentChat={setCurrentChat} />
           </div>
         </div>
       </div>
