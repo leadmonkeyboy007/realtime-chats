@@ -24,15 +24,44 @@ const io = socketio(server, {
     }
 });
 
-io.on('connection', function(socket) {
-  console.log('connected socket!');
+let users = [];
 
-  socket.on('greet', function(data) {
-    console.log(data.message);
-    socket.emit('respond', { hello: 'Hey, Mr.Client!' });
+const addUser = (userId, socketId) => {
+  !users.some(user=>user.userId === userId) && 
+    users.push({ userId, socketId });
+}
+
+const removeUser = (socketId) => {
+  users = users.filter(user=>user.socketId !== socketId);
+}
+
+const getUser = (userId) => {
+  return users.find(user => user.userId === userId);
+}
+
+io.on('connection', (socket) => {
+  // When connect
+  console.log('a user connected');
+
+  socket.on('AddUser', (userId) => {
+    addUser(userId, socket.id);
+    socket.emit('getUsers', users);
   });
-  socket.on('disconnect', function() {
-    console.log('Socket disconnected');
+
+  // send and get Message
+  socket.on("sendMessage", ({senderId, receiverId, text}) => {
+    const user = getUser(receiverId);
+    socket.to(user.socketId).emit("getMessage", {
+      senderId: senderId,
+      text: text,
+    });
+  })
+
+  // When disconnect
+  socket.on('disconnect', () => {
+    console.log('a user disconnected');
+    removeUser(socket.id);
+    socket.emit('getUsers', users);
   });
 });
 

@@ -14,22 +14,42 @@ export default function Messenger() {
   const BL = process.env.REACT_APP_API_URL;
   const [conversations, setConverations] = useState([]);
   const [messages, setMessages] = useState([]);
-  const socket = useRef(io('http://localhost:8000', {           
-      "transports" : ["websocket"]
-  }));
+  const [arrivalmessage, setarrivalmessage] = useState(null);
+  const socket = useRef();
   const messageInput = useRef();
   // this ref is for ref forward sample
   const imgRef = useRef([]); //I didn't use this. just reference
   const [currentChat, setCurrentChat] = useState(null);
   const [partnerImg, setPartnerImg] = useState(null);
   const scrollRef = useRef();
+  // web socket
+  
 
-  console.log(socket.current)
+  useEffect(() => {
+    socket.current = io('http://localhost:8000', {           
+      "transports" : ["websocket"]
+    });
+    socket.current.on("getMessage", data => {
+      console.log("data", data)
+      setarrivalmessage({
+        sender: data.senderId,
+        text: data.text,
+        createdAt: Date.now(),
+      })
+    })
+  }, []);
+
+  useEffect(() => {
+    arrivalmessage && currentChat?.members.includes(arrivalmessage.sender) && setMessages((prev) => [...prev, arrivalmessage])
+  }, [arrivalmessage, currentChat]);
   // socket.io
   useEffect(() => {
-    socket.current.on('connect', function () {
+    socket.current.on('connect', () => {
       console.log('connected!');
-      socket.current.emit('greet', { message: 'Hello Mr.Server!' });
+      socket.current.emit('AddUser', user._id);
+      socket.current.on('getUsers', (users) => {
+        console.log(users);
+      })
     });
   }, [user]);
 
@@ -76,6 +96,15 @@ export default function Messenger() {
       text: messageInput.current.value,
       conversationId: currentChat._id
     }
+    
+    const receiverId = currentChat.members.find((m) => m !== user._id);
+
+    socket.current.emit("sendMessage", {
+      senderId: user._id,
+      receiverId,
+      text: messageInput.current.value
+    })
+
     try {
       const res = await axios.post(`${BL}/messages/`, newMessage);
       setMessages([...messages, res.data])
