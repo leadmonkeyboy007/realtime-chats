@@ -24,13 +24,14 @@ export default function Messenger() {
   const imgRef = useRef([]); //I didn't use this. just reference
   const [currentChat, setCurrentChat] = useState(null);
   const [partnerImg, setPartnerImg] = useState(null);
+  const [typing, setTyping] = useState({});
   const scrollRef = useRef();
   // web socket
-  
+
 
   useEffect(() => {
-    socket.current = io('http://localhost:8000', {           
-      "transports" : ["websocket"]
+    socket.current = io('http://localhost:8000', {
+      "transports": ["websocket"]
     });
     socket.current.on("getMessage", data => {
       console.log("data", data)
@@ -40,22 +41,28 @@ export default function Messenger() {
         createdAt: Date.now(),
       })
     })
+    socket.current.on('typing-started-from-server', (status) => {
+      console.log(status)
+      setTyping(status)
+    });
   }, []);
 
   useEffect(() => {
     arrivalmessage && currentChat?.members.includes(arrivalmessage.sender) && setMessages((prev) => [...prev, arrivalmessage])
   }, [arrivalmessage, currentChat]);
+
   // socket.io
   useEffect(() => {
-    // socket.current.on('connect', () => {
+    socket.current.on('connect', () => {
       console.log('connected!');
       socket.current.emit('AddUser', user._id);
-      socket.current.on('getUsers', (users) => {
-        setOnlineUsers(users);
-      // })
+    })
+    socket.current.on('getUsers', (users) => {
+      setOnlineUsers(users);
+      console.log(users)
     });
   }, [user]);
-  
+
   useEffect(() => {
     const getConversations = async () => {
       try {
@@ -99,7 +106,7 @@ export default function Messenger() {
       text: messageInput.current.value,
       conversationId: currentChat._id
     }
-    
+
     const receiverId = currentChat.members.find((m) => m !== user._id);
 
     socket.current.emit("sendMessage", {
@@ -116,6 +123,32 @@ export default function Messenger() {
       console.log(err)
     }
   }
+
+  const [typingTimeout, setTypingTimeout] = useState(null);
+
+  const handleTyping = (e) => {
+    if (e.keyCode === 13) {
+      sendMessage(e);
+      setTyping({});
+    } else {
+      const receiverId = currentChat.members.find((m) => m !== user._id);
+      socket.current.emit("typing-started", {
+        senderId: user._id,
+        receiverId
+      })
+
+      if (typingTimeout) clearTimeout(typingTimeout);
+
+      setTypingTimeout(setTimeout(() => {
+        console.log("Typing Stopped")
+        socket.current.emit("typing-stopped", {
+          senderId: user._id,
+          receiverId
+        })
+        }, 1000));
+    }
+  }
+
   // scroll bottom
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -151,8 +184,9 @@ export default function Messenger() {
                       ))
                     }
                   </div>
+                  <span className={(typing.status === true) ? "typing" : "hide"}>Typing ...</span>
                   <div className="chatBoxBottom">
-                    <textarea className='chatMessageInput' placeholder='Write Something ...' ref={messageInput}></textarea>
+                    <textarea className='chatMessageInput' placeholder='Write Something ...' ref={messageInput} onChange={handleTyping}></textarea>
                     <button className='chatSubmitButton' onClick={sendMessage}>Send</button>
                   </div>
                 </> :

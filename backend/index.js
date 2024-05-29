@@ -19,20 +19,20 @@ const http = require('http');
 const server = http.createServer(app);
 
 const io = socketio(server, {
-    cors: {
-        origin: ["localhost:3000/"]
-    }
+  cors: {
+    origin: ["localhost:3000/"]
+  }
 });
 
 let users = [];
 
 const addUser = (userId, socketId) => {
-  !users.some(user=>user.userId === userId) && 
+  !users.some(user => user.userId === userId) &&
     users.push({ userId, socketId });
 }
 
 const removeUser = (socketId) => {
-  users = users.filter(user=>user.socketId !== socketId);
+  users = users.filter(user => user.socketId !== socketId);
 }
 
 const getUser = (userId) => {
@@ -49,12 +49,44 @@ io.on('connection', (socket) => {
   });
 
   // send and get Message
-  socket.on("sendMessage", ({senderId, receiverId, text}) => {
+  socket.on("sendMessage", ({ senderId, receiverId, text }) => {
     const user = getUser(receiverId);
-    socket.to(user.socketId).emit("getMessage", {
-      senderId: senderId,
-      text: text,
-    });
+    console.log(user)
+    if (user == undefined) {
+      socket.broadcast.emit("status", "user offline");
+    } else {
+      socket.to(user.socketId).emit("getMessage", {
+        senderId: senderId,
+        text: text,
+      });
+    }
+  })
+
+  // Typing started
+  socket.on("typing-started", ({ senderId, receiverId }) => {
+    const user = getUser(receiverId);
+    console.log(user)
+    if (user == undefined) {
+      socket.broadcast.emit("status", "user offline");
+    } else {
+      socket.to(user.socketId).emit("typing-started-from-server", {
+        senderId: senderId,
+        status: true
+      });
+    }
+  })
+
+  // Typing Stopped
+  socket.on("typing-stopped", ({ senderId, receiverId }) => {
+    const user = getUser(receiverId);
+    if (user == undefined) {
+      socket.broadcast.emit("status", "user offline");
+    } else {
+      socket.to(user.socketId).emit("typing-started-from-server", {
+        senderId: senderId,
+        status: false
+      });
+    }
   })
 
   // When disconnect
