@@ -20,7 +20,7 @@ const server = http.createServer(app);
 
 const io = socketio(server, {
   cors: {
-    origin: ["localhost:3000/"]
+    origin: [process.env.CLIENT_URL]
   }
 });
 
@@ -102,13 +102,15 @@ dotenv.config();
 
 db();
 
-app.use("/images", express.static(path.join(__dirname, "public/images")));
-console.log(path.join(__dirname, "public/images"))
+
 //middleware
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("common"));
 app.use(cors());
+
+app.use("/images", express.static(path.join(__dirname, "public/images")));
+console.log(path.join(__dirname, "public/images"))
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

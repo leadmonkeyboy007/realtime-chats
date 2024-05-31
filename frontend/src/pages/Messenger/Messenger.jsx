@@ -11,7 +11,6 @@ import { io } from "socket.io-client";
 export default function Messenger() {
 
   const { user } = useContext(AuthContext);
-  const BL = process.env.REACT_APP_API_URL;
   const [conversations, setConverations] = useState([]);
   const [messages, setMessages] = useState([]);
   // get messages by Web socket
@@ -30,7 +29,7 @@ export default function Messenger() {
 
 
   useEffect(() => {
-    socket.current = io('http://localhost:8000', {
+    socket.current = io(process.env.REACT_APP_API_URI, {
       "transports": ["websocket"]
     });
     socket.current.on("getMessage", data => {
@@ -66,7 +65,7 @@ export default function Messenger() {
   useEffect(() => {
     const getConversations = async () => {
       try {
-        const conversationList = await axios.get(`${BL}/conversations/${user._id}`);
+        const conversationList = await axios.get(`/conversations/${user._id}`);
         setConverations(conversationList.data);
       } catch (error) {
         console.log(error)
@@ -80,7 +79,7 @@ export default function Messenger() {
   }
   const getPartnerInfo = async (userId) => {
     try {
-      const res = await axios.get(`${BL}/users?userId=` + userId);
+      const res = await axios.get(`/users?userId=` + userId);
       setPartnerImg(res.data[0].profilePicture);
     } catch (error) {
       console.log(error);
@@ -90,7 +89,7 @@ export default function Messenger() {
   useEffect(() => {
     const getMessages = async () => {
       try {
-        const res = await axios.get(`${BL}/messages/` + currentChat?._id);
+        const res = await axios.get(`/messages/` + currentChat?._id);
         setMessages(res.data);
       } catch (error) {
         console.log(error);
@@ -116,7 +115,7 @@ export default function Messenger() {
     })
 
     try {
-      const res = await axios.post(`${BL}/messages/`, newMessage);
+      const res = await axios.post(`/messages/`, newMessage);
       setMessages([...messages, res.data])
       messageInput.current.value = "";
     } catch (err) {

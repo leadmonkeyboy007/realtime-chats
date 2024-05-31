@@ -10,8 +10,6 @@ export default function Register() {
   const passwordAgain = useRef();
   const history = useNavigate();
 
-  const BL = process.env.REACT_APP_API_URL;
-
   const handleClick = async (e) => {
     e.preventDefault();
     if (passwordAgain.current.value !== password.current.value) {
@@ -23,7 +21,7 @@ export default function Register() {
         password: password.current.value,
       };
       try {
-        await axios.post(`${BL}/auth/register`, user);
+        await axios.post(`/auth/register`, user);
         history("/login");
       } catch (err) {
         console.log(err);

@@ -6,12 +6,11 @@ export default function ChatOnline({ onlineUsers, currentId, setCurrentChat }) {
     const [friends, setFriends] = useState([]);
     const [onlineFriends, setOnlineFriends] = useState([]);
     const PF = process.env.REACT_APP_PUBLIC_FOLDER;
-    const BL = process.env.REACT_APP_API_URL;
 
     useEffect(() => {
         const getFriends = async () => {
             try {
-                const res = await axios.get(`${BL}/users/friends/` + currentId);
+                const res = await axios.get(`/users/friends/` + currentId);
                 setFriends(res.data);
             } catch (err) {
                 console.log(err)
@@ -27,7 +26,7 @@ export default function ChatOnline({ onlineUsers, currentId, setCurrentChat }) {
 
     const handleClick = async (user) => {
         try {
-            const res = await axios.get(`${BL}/conversations/find/${currentId}/${user._id}`);
+            const res = await axios.get(`/conversations/find/${currentId}/${user._id}`);
             setCurrentChat(res.data);
         } catch (err) {
             console.log(err)

@@ -3,7 +3,6 @@ import moment from 'moment';
 
 export default function Message({message, currentUser, partnerImg}) {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
-  const BL = process.env.REACT_APP_API_URL;
   const own = (currentUser._id === message.sender)? true: false;
       
   return (

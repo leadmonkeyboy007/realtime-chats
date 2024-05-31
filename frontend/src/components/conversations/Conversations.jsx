@@ -5,7 +5,6 @@ import axios from 'axios';
 export const Conversations = React.forwardRef((props, ref) => {
   const {conversation, currentUser} = props;
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
-  const BL = process.env.REACT_APP_API_URL;
   const [user, setUser] = useState({});
   const initialized = useRef(false)
 
@@ -16,7 +15,7 @@ export const Conversations = React.forwardRef((props, ref) => {
 
       const getUserInfo = async () => {
         try {
-          const res = await axios(`${BL}/users?userId=${friendId}`).then((res) => {
+          const res = await axios(`/users?userId=${friendId}`).then((res) => {
             setUser(res.data[0]);
           });
         } catch (error) {
